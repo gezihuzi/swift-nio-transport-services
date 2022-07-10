@@ -84,6 +84,9 @@ internal final class NIOTSListenerChannel {
 
     /// Whether to enable peer-to-peer connectivity when using Bonjour services.
     private var enablePeerToPeer = false
+    
+    // The value of the lisenter.service
+    private var bonjourService: NWListener.Service? = nil
 
     /// The event loop group to use for child channels.
     private let childLoopGroup: EventLoopGroup
@@ -199,6 +202,8 @@ extension NIOTSListenerChannel: Channel {
             self.enablePeerToPeer = value as! NIOTSChannelOptions.Types.NIOTSEnablePeerToPeerOption.Value
         case is NIOTSChannelOptions.Types.NIOTSAllowLocalEndpointReuse:
             self.allowLocalEndpointReuse = value as! NIOTSChannelOptions.Types.NIOTSEnablePeerToPeerOption.Value
+        case is NIOTSChannelOptions.Types.NIOTSBonjourService:
+            self.bonjourService = value as? NIOTSChannelOptions.Types.NIOTSBonjourService.Value
         default:
             fatalError("option \(option) not supported")
         }
@@ -329,6 +334,8 @@ extension NIOTSListenerChannel: StateManagedChannel {
         if case .service(let name, let type, let domain, _) = target {
             // Ok, now we deal with Bonjour.
             listener.service = NWListener.Service(name: name, type: type, domain: domain)
+        } else {
+            listener.service = self.bonjourService
         }
 
         listener.stateUpdateHandler = self.stateUpdateHandler(newState:)

@@ -27,6 +27,8 @@ public struct NIOTSChannelOptions {
     public static let allowLocalEndpointReuse = NIOTSChannelOptions.Types.NIOTSAllowLocalEndpointReuse()
 
     public static let currentPath = NIOTSChannelOptions.Types.NIOTSCurrentPathOption()
+    
+    public static let bonjourService = NIOTSChannelOptions.Types.NIOTSBonjourService()
 
     public static let metadata = { (definition: NWProtocolDefinition) -> NIOTSChannelOptions.Types.NIOTSMetadataOption in
         .init(definition: definition)
@@ -122,6 +124,16 @@ extension NIOTSChannelOptions {
         @available(OSX 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
         public struct NIOTSDataTransferReportOption: ChannelOption, Equatable {
             public typealias Value = NWConnection.PendingDataTransferReport
+            
+            public init() {}
+        }
+        
+        /// `NIOTSBonjourService` accesses the `NWListener.service` of the bonjour service.
+        ///
+        /// This option is only valid with `NIOTSConnectionBootstrap`.
+        @available(OSX 10.14, iOS 12.0, tvOS 12.0, watchOS 6.0, *)
+        public struct NIOTSBonjourService: ChannelOption, Equatable {
+            public typealias Value = NWListener.Service
             
             public init() {}
         }
